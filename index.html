@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Week 6 Assignment: Code Review Refactor</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem; background: #f4f4f9; display: flex; justify-content: center; }
+        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        .counter-controls { display: flex; gap: 0.5rem; margin: 1rem 0; }
+        button { flex: 1; padding: 0.5rem; font-size: 1rem; cursor: pointer; border: 1px solid #ccc; border-radius: 4px; background: #e9ecef; }
+        button:hover { background: #dee2e6; }
+        .log-box { background: #212529; color: #f8f9fa; padding: 1rem; border-radius: 4px; font-family: monospace; font-size: 0.85rem; max-height: 150px; overflow-y: auto; }
+        .stat { font-weight: bold; color: #007bff; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Click Analytics Dashboard</h2>
+        <p>Current Count: <span id="countDisplay" class="stat">0</span></p>
+        <p>Total Clicks: <span id="totalClicksDisplay" class="stat">0</span></p>
+        <p>Last Action: <span id="lastActionDisplay" class="stat">None</span></p>
+        
+        <div class="counter-controls">
+            <button id="incrementBtn">Increment</button>
+            <button id="decrementBtn">Decrement</button>
+        </div>
+
+        <h3>Activity Log History</h3>
+        <div id="logDisplay" class="log-box"></div>
+    </div>
+
+    <!-- MESSY INITIAL JAVASCRIPT CODE -->
+    <script>
+        // // ❌ CHAOTIC GLOBAL VARIABLES (The anti-pattern we need to fix)
+        // let currentCount = 0;
+        // let totalClicksEver = 0;
+        // let whatWasTheLastAction = "None";
+        // let trackingHistoryLogArray = [];
+
+    const appState = {
+        currentCount: 0,
+        totalClicksEver: 0,
+        whatWasTheLastAction: "None",
+        trackingHistoryLogArray: []
+    };
+
+    const countDisplay = document.getElementById("countDisplay");
+    const totalClicksDisplay = document.getElementById("totalClicksDisplay");
+    const lastActionDisplay = document.getElementById("lastActionDisplay");
+    const logDisplay = document.getElementById("logDisplay");
+
+    function renderApp() {
+        countDisplay.textContent = appState.currentCount;
+        totalClicksDisplay.textContent = appState.totalClicksEver;
+        lastActionDisplay.textContent = appState.whatWasTheLastAction;
+        logDisplay.innerHTML = appState.trackingHistoryLogArray
+            .map(item => `<div>${item}</div>`)
+            .join("");
+    }
+
+    document.getElementById("incrementBtn").addEventListener("click", function() {
+        appState.currentCount++;
+        appState.totalClicksEver++;
+        appState.whatWasTheLastAction = "Incremented";
+        appState.trackingHistoryLogArray.push("User incremented count.");
+
+        renderApp();
+    });
+
+    document.getElementById("decrementBtn").addEventListener("click", function() {
+        appState.currentCount--;
+        appState.totalClicksEver++;
+        appState.whatWasTheLastAction = "Decremented";
+        appState.trackingHistoryLogArray.push("User decremented count.");
+
+        renderApp();
+    });
+</script>
+</body>
+</html>
